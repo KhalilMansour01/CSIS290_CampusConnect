@@ -368,7 +368,7 @@ CREATE TABLE public.users (
     user_type character varying(20) NOT NULL,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     date_of_birth date,
-    CONSTRAINT users_user_type_check CHECK (((user_type)::text = ANY ((ARRAY['Student'::character varying, 'OSA_Admin'::character varying])::text[])))
+    CONSTRAINT users_user_type_check CHECK (((user_type)::text = ANY ((ARRAY['Student'::character varying,'Officer'::character varying, 'OSA_Admin'::character varying])::text[])))
 );
 
 
