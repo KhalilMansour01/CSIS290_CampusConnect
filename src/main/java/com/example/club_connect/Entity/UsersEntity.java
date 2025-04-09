@@ -8,10 +8,10 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "users")
 public class UsersEntity {
-    
-   @Id
-    @Column(name = "id", length = 10)
-    private String id;  // Example: USR250001
+
+    @Id
+    @Column(name = "id", length = 10, updatable = false, nullable = false, insertable = false )
+    private String id; // Example: USR250001
 
     @Column(name = "first_name", length = 50, nullable = false)
     private String firstName;
@@ -21,8 +21,8 @@ public class UsersEntity {
 
     @Column(name = "email", length = 100, nullable = false, unique = true)
     // @Pattern(
-    //     regexp = "^[A-Za-z0-9._%+-]+@(std\\.)?balamand\\.edu\\.lb$",
-    //     message = "Email must be a valid University email"
+    // regexp = "^[A-Za-z0-9._%+-]+@(std\\.)?balamand\\.edu\\.lb$",
+    // message = "Email must be a valid University email"
     // )
     private String email;
 
