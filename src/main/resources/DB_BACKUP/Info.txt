@@ -1,0 +1,31 @@
+To Restore:
+
+cd "C:\Program Files\PostgreSQL\17\bin"
+
+create dump:
+pg_dump -U your_local_db_user -d your_local_db_name -F p -f local_dump.sql
+
+pg_dump -U postgres -d CampusConnect -F p -f "C:\Users\Khalil-PC\Desktop\local_dump.sql"
+
+
+import dump
+psql -h aws-0-eu-central-1.pooler.supabase.com -p 5432 -U postgres.nxskejvizzgohrggpjsn -d postgres -f "C:\Users\Khalil-PC\Desktop\local_dump.sql"
+
+
+DB On Supabase
+host:           aws-0-eu-central-1.pooler.supabase.com
+port:           5432
+database:       postgres
+user:           postgres.nxskejvizzgohrggpjsn
+password:       CampusConnect@290
+
+
+DB on local
+host:           127.0.0.1
+port:           5432
+database:       CampusConnect
+user:           postgres
+
+
+
+
