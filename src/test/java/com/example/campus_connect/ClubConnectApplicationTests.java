@@ -1,4 +1,4 @@
-package com.example.club_connect;
+package com.example.campus_connect;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
