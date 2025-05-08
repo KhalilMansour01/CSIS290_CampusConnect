@@ -1,37 +1,61 @@
-// package com.example.campus_connect.Security;
+package com.example.campus_connect.Security;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 
-// import org.springframework.security.core.userdetails.UserDetails;
-// import org.springframework.security.core.userdetails.UserDetailsService;
-// import org.springframework.security.core.userdetails.UsernameNotFoundException;
-// import org.springframework.security.core.authority.SimpleGrantedAuthority;
-// import org.springframework.stereotype.Service;
-
-// import com.example.campus_connect.Modules.Users.UsersRepository;
-// import com.example.campus_connect.Modules.Users.UsersEntity;
-
-// import java.util.List;
+import com.example.campus_connect.Entity.UsersEntity;
+import com.example.campus_connect.Repository.UsersRepository;
 
 
-// @Service
-// public class CustomUserDetailsService implements UserDetailsService {
 
-//     private final UsersRepository usersRepository;
+import java.util.Optional;
+// import java.util.Arrays;
 
-//     public CustomUserDetailsService(UsersRepository usersRepository) {
-//         this.usersRepository = usersRepository;
-//     }
+@Service
+public class CustomUserDetailsService implements UserDetailsService {
+    @Autowired
+    private UsersRepository usersRepository;
 
-//     @Override
-//     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-//         UsersEntity user = usersRepository.findByEmail(email)
-//                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<UsersEntity> user = usersRepository.findByEmail(email);
+        if (user.isPresent()) {
+            var tempUser = user.get();
+            String[] roles = getRoles(tempUser);
+            // Debug log to check roles
+            // System.out.println("Roles assigned: " + Arrays.toString(roles));
+            return User.builder()
+                    .username(tempUser.getEmail())
+                    .password(tempUser.getPassword())
+                    .roles(roles)
+                    .build();
+        } else {
+            throw new UsernameNotFoundException("User not found with email: " + email);
+        }
+    }
 
-//         return new org.springframework.security.core.userdetails.User(
-//                 user.getEmail(),
-//                 user.getPassword(),
-//                 List.of(new SimpleGrantedAuthority("ROLE_" + user.getUserType().toUpperCase())) // e.g. ROLE_STUDENT
-//         );
-//     }
-// }
+    private String[] getRoles(UsersEntity user) {
+        if (user.getUserType() == null) {
+            return new String[] { "OSA_Admin" };
+        } else {
+            return user.getUserType().split(",");
+        }
+    }
 
+    // private String[] getRoles(AdminEntity admin) {
+    // if (admin.getRole() == null) {
+    // return new String[] { "ROLE_ADMIN" };
+    // } else {
+    // // Add "ROLE_" prefix to each role
+    // return Arrays.stream(admin.getRole().split(","))
+    // .map(role -> "ROLE_" + role.trim())
+    // .toArray(String[]::new);
+    // }
+    // }
+
+}

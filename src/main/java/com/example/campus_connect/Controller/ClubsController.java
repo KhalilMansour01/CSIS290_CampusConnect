@@ -5,6 +5,7 @@ package com.example.campus_connect.Controller;
 // import com.example.club_connect.Modules.Clubs.ClubResponseDTO;
 // import com.example.club_connect.Modules.Clubs.ClubsEntity;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,6 +55,7 @@ public class ClubsController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_OSA_ADMIN')")
     public ResponseEntity<ClubResponseDTO> createClub(@RequestBody ClubRequestDTO clubDto) {
         return clubsService.createClub(clubDto);
     }

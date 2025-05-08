@@ -60,4 +60,15 @@ public class UsersController {
         return usersService.deleteUser(id);
     }
  
+    // TODO: Implement login, register, and other authentication methods
+
+    // @PutMapping("/enable/{id}")
+    // public ResponseEntity<UsersEntity> enableUser(@PathVariable String id) {
+    //     return usersService.enableUser(id);
+    // }
+
+    // @PutMapping("/changePassword/{id}")
+    // public String putMethodName(@PathVariable String id, @RequestBody String password) {        
+    //     return entity;
+    // }
 }

@@ -1,4 +1,4 @@
-package com.example.campus_connect.Security;
+package com.example.campus_connect.DTOs.Auth;
 
 public class AuthRequest {
     private String email;

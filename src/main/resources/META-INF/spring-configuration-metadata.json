@@ -1,0 +1,14 @@
+{
+    "properties": [
+      {
+        "name": "app.jwtSecret",
+        "type": "java.lang.String",
+        "description": "Secret key for JWT token generation"
+      },
+      {
+        "name": "app.jwtExpirationMs",
+        "type": "java.lang.Long",
+        "description": "Expiration time for JWT tokens in milliseconds"
+      }
+    ]
+  }

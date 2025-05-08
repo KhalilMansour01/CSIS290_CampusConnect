@@ -1,45 +1,78 @@
-// package com.example.campus_connect.Security;
+package com.example.campus_connect.Security;
 
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.context.annotation.Bean;
-// import org.springframework.context.annotation.Configuration;
-// import org.springframework.security.authentication.AuthenticationManager;
-// import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-// import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-// import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-// import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-// import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-// import org.springframework.security.crypto.password.PasswordEncoder;
-// import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-// @Configuration
-// @EnableWebSecurity
-// public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-//     @Autowired
-//     private JwtRequestFilter jwtRequestFilter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-//     @Override
-//     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//         auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
-//     }
 
-//     @Bean
-//     @Override
-//     public AuthenticationManager authenticationManagerBean() throws Exception {
-//         return super.authenticationManagerBean();
-//     }
+@Configuration
+@EnableWebSecurity
+// @EnableMethodSecurity
+public class SecurityConfig {
 
-//     @Override
-//     protected void configure(HttpSecurity http) throws Exception {
-//         http.csrf().disable()
-//                 .authorizeRequests().antMatchers("/authenticate", "/register").permitAll()
-//                 .anyRequest().authenticated();
-//         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-//     }
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
 
-//     @Bean
-//     public PasswordEncoder passwordEncoder() {
-//         return NoOpPasswordEncoder.getInstance(); // For simplicity; use BCryptPasswordEncoder in production
-//     }
-// }
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity
+        .csrf(AbstractHttpConfigurer::disable)  //by default csrf is enabled, it blocks post requests
+        .authorizeHttpRequests(registry ->{
+            //
+            // registry.requestMatchers("/**").hasRole("OSA_Admin");
+            registry.requestMatchers("/clubs").hasAnyRole("Student", "Officer");
+            // registry.requestMatchers("/api/auth/register").permitAll();
+            registry.requestMatchers("/api/auth/login").permitAll();
+            // registry.requestMatchers("/**").permitAll();
+
+            registry.anyRequest().authenticated();
+        })
+        .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        .build();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return userDetailsService;
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager() {
+        return new ProviderManager(authenticationProvider());
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}
