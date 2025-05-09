@@ -29,7 +29,7 @@ import com.example.campus_connect.Entity.EventsEntity;
 import com.example.campus_connect.Service.EventsService;
 
 @Controller
-@RequestMapping("/events")
+@RequestMapping("/api/events")
 public class EventsController {
 
     @Autowired

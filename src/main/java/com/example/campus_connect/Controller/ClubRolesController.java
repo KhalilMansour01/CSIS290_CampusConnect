@@ -29,7 +29,7 @@ import com.example.campus_connect.Entity.ClubRolesEntity;
 import com.example.campus_connect.Service.ClubRolesService;
 
 @Controller
-@RequestMapping("/club-roles")
+@RequestMapping("/api/club-roles")
 public class ClubRolesController {
 
     @Autowired

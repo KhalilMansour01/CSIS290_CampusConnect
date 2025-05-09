@@ -23,7 +23,7 @@ import com.example.campus_connect.Service.UsersService;
 import java.util.*;
 
 @Controller
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UsersController {
 
     @Autowired
@@ -32,6 +32,12 @@ public class UsersController {
     @GetMapping("/all")
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         List<UserResponseDTO> users = usersService.getAllUsers();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+    
+    @GetMapping("/all1")
+    public ResponseEntity<List<UsersEntity>> getAllUsers1() {
+        List<UsersEntity> users = usersService.getAllUsers1();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 

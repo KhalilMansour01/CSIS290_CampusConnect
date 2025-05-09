@@ -29,7 +29,7 @@ import com.example.campus_connect.DTOs.MembershipRequests.MembershipResponseDTO;
 import com.example.campus_connect.Service.MembershipRequestsService;
 
 @Controller
-@RequestMapping("/membership-requests")
+@RequestMapping("/api/membership-requests")
 public class MembershipRequestsController {
 
     @Autowired

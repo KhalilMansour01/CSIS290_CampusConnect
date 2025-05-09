@@ -29,7 +29,7 @@ import com.example.campus_connect.Entity.AnnouncementsEntity;
 import com.example.campus_connect.Service.AnnouncementsService;
 
 @Controller
-@RequestMapping("/announcements")
+@RequestMapping("/api/announcements")
 public class AnnouncementsController {
 
     @Autowired

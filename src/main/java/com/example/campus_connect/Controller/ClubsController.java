@@ -34,7 +34,7 @@ import com.example.campus_connect.Entity.ClubsEntity;
 import com.example.campus_connect.Service.ClubsService;
 
 @Controller
-@RequestMapping("/clubs")
+@RequestMapping("/api/clubs")
 public class ClubsController {
 
     @Autowired

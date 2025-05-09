@@ -1,7 +1,5 @@
 package com.example.campus_connect.Security;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
 @Configuration
 @EnableWebSecurity
 // @EnableMethodSecurity
@@ -39,11 +36,23 @@ public class SecurityConfig {
         return httpSecurity
         .csrf(AbstractHttpConfigurer::disable)  //by default csrf is enabled, it blocks post requests
         .authorizeHttpRequests(registry ->{
-            //
+            registry.requestMatchers("/api/auth/login/**").permitAll();
+            registry.requestMatchers("/**").hasAnyRole("Student", "Officer", "OSA_Admin");
+            // registry.requestMatchers(
+            //     "/api/announcements/**",
+            //                 "/api/club-membership/**",
+            //                 "/api/club-roles/**",
+            //                 "/api/clubs/**",
+            //                 "/api/event-attendance/**",
+            //                 "/api/events/**",
+            //                 "/api/users/**",
+            //                 "/api/membership-requests/**"
+            //                 )
+            //                 .hasAnyRole("Student", "Officer");
+
             // registry.requestMatchers("/**").hasRole("OSA_Admin");
-            registry.requestMatchers("/clubs").hasAnyRole("Student", "Officer");
-            // registry.requestMatchers("/api/auth/register").permitAll();
-            registry.requestMatchers("/api/auth/login").permitAll();
+            // registry.requestMatchers("/**").permitAll();
+            // registry.requestMatchers("/**").hasAnyRole("OSA_Admin");
             // registry.requestMatchers("/**").permitAll();
 
             registry.anyRequest().authenticated();

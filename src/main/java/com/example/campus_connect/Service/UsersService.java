@@ -2,6 +2,7 @@ package com.example.campus_connect.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
 
@@ -25,11 +26,20 @@ public class UsersService {
     @Autowired
     private UserMapper usersMapper;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public List<UserResponseDTO> getAllUsers() {
         return usersRepository.findAll().stream()
                 .map(usersMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+    public List<UsersEntity> getAllUsers1() {
+        return usersRepository.findAll().stream()
+                .collect(Collectors.toList());
+    }
+
 
     public ResponseEntity<UserResponseDTO> getUserById(String id) {
         UsersEntity user = usersRepository.findById(id)
@@ -38,17 +48,23 @@ public class UsersService {
     }
 
     // public ResponseEntity<UserResponseDTO> createUser(UserRequestDTO userDTO) {
-    //     UsersEntity user = usersMapper.toEntity(userDTO);
-    //     System.out.println("User: " + user.toString());
-    //     UsersEntity createdUser = usersRepository.save(user);
-    //     UserResponseDTO userResponseDTO = usersMapper.toDto(createdUser);
-    //     return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDTO);
+    // UsersEntity user = usersMapper.toEntity(userDTO);
+    // System.out.println("User: " + user.toString());
+    // UsersEntity createdUser = usersRepository.save(user);
+    // UserResponseDTO userResponseDTO = usersMapper.toDto(createdUser);
+    // return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDTO);
     // }
 
     public ResponseEntity<UsersEntity> createUser(UsersEntity user) {
-        user.setId(userIdGenerator.generateUserId());
-        UsersEntity createdUser = usersRepository.save(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+        boolean exists = usersRepository.findByEmail(user.getEmail()).isPresent();
+        if (exists) {
+            throw new RuntimeException("User already exists with email: " + user.getEmail());
+        } else {
+            user.setId(userIdGenerator.generateUserId());
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            UsersEntity createdUser = usersRepository.save(user);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+        }
     }
 
     public ResponseEntity<UsersEntity> updateUser(String id, UsersEntity user) {
