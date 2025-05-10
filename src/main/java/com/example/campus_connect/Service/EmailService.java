@@ -1,4 +1,4 @@
-package com.example.campus_connect.Security;
+package com.example.campus_connect.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;

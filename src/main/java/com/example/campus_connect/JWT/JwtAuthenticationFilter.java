@@ -1,4 +1,4 @@
-package com.example.campus_connect.Security;
+package com.example.campus_connect.JWT;
 
 
 import org.springframework.web.filter.OncePerRequestFilter;

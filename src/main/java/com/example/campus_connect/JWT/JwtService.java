@@ -1,5 +1,4 @@
-package com.example.campus_connect.Security;
-import com.example.campus_connect.Entity.UsersEntity;
+package com.example.campus_connect.JWT;
 
 import java.time.Instant;
 import java.util.Base64;

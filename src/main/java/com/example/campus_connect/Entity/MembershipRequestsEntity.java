@@ -2,6 +2,7 @@ package com.example.campus_connect.Entity;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.*;
 
@@ -25,6 +26,7 @@ public class MembershipRequestsEntity {
     private String status; // Pending, Approved, Rejected
 
     @Column(name = "request_date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate requestDate = LocalDate.now();
 
     // Getters and setters...

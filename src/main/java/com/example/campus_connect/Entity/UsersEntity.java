@@ -3,6 +3,8 @@ package com.example.campus_connect.Entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -20,10 +22,6 @@ public class UsersEntity {
     private String lastName;
 
     @Column(name = "email", length = 100, nullable = false, unique = true)
-    // @Pattern(
-    // regexp = "^[A-Za-z0-9._%+-]+@(std\\.)?balamand\\.edu\\.lb$",
-    // message = "Email must be a valid University email"
-    // )
     private String email;
 
     @Column(name = "password", nullable = false)
@@ -39,9 +37,11 @@ public class UsersEntity {
     // ]::text[])
 
     @Column(name = "created_at", columnDefinition = "timestamp default CURRENT_TIMESTAMP")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime createdAt;
 
     @Column(name = "date_of_birth")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
 
     @Column(name = "is_enabled", nullable = false)
