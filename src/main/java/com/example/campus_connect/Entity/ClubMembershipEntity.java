@@ -2,6 +2,8 @@ package com.example.campus_connect.Entity;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -25,6 +27,7 @@ public class ClubMembershipEntity {
     private ClubRolesEntity role;
 
     @Column(name = "joined_date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate joinedDate = LocalDate.now();
 
     // Getters and setters...

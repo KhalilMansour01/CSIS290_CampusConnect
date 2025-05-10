@@ -1,24 +1,16 @@
-package com.example.campus_connect.DTOs.Users;
+package com.example.campus_connect.DTOs;
 
-public class UserResponseDTO {
-    private String id;
+import java.time.LocalDate;
+
+public class RegisterForm {
     private String firstName;
     private String lastName;
     private String email;
+    private String password;
     private String userType;
-    private String dateOfBirth;
-    private String createdAt;
+    private LocalDate dateOfBirth;
 
-    // Getters and setters
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
+    // Getters and Setters
     public String getFirstName() {
         return firstName;
     }
@@ -43,6 +35,14 @@ public class UserResponseDTO {
         this.email = email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getUserType() {
         return userType;
     }
@@ -51,19 +51,11 @@ public class UserResponseDTO {
         this.userType = userType;
     }
 
-    public String getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
     }
 }

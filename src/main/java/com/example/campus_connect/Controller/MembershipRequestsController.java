@@ -23,9 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.*;
 
-import com.example.campus_connect.DTOs.MembershipRequests.MembershipRequestDTO;
 import com.example.campus_connect.Entity.MembershipRequestsEntity;
-import com.example.campus_connect.DTOs.MembershipRequests.MembershipResponseDTO;
 import com.example.campus_connect.Service.MembershipRequestsService;
 
 @Controller
@@ -36,19 +34,19 @@ public class MembershipRequestsController {
     private MembershipRequestsService membershipRequestsService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<MembershipResponseDTO>> getAllMembershipRequests() {
-        List<MembershipResponseDTO> membershipRequests = membershipRequestsService.getAllMembershipRequests();
+    public ResponseEntity<List<MembershipRequestsEntity>> getAllMembershipRequests() {
+        List<MembershipRequestsEntity> membershipRequests = membershipRequestsService.getAllMembershipRequests();
         return new ResponseEntity<>(membershipRequests, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MembershipResponseDTO> getMembershipRequestById(@PathVariable Integer id) {
+    public ResponseEntity<MembershipRequestsEntity> getMembershipRequestById(@PathVariable Integer id) {
         return membershipRequestsService.getMembershipRequestById(id);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<MembershipResponseDTO> createMembershipRequest(
-            @RequestBody MembershipRequestDTO membershipRequest) {
+    public ResponseEntity<MembershipRequestsEntity> createMembershipRequest(
+            @RequestBody MembershipRequestsEntity membershipRequest) {
         return membershipRequestsService.createMembershipRequest(membershipRequest);
     }
 

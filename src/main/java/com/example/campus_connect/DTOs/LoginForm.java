@@ -1,4 +1,4 @@
-package com.example.campus_connect.Security;
+package com.example.campus_connect.DTOs;
 
 public record LoginForm (String email, String password) {
    

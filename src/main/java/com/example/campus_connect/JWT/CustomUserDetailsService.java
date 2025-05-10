@@ -1,4 +1,4 @@
-package com.example.campus_connect.Security;
+package com.example.campus_connect.JWT;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;

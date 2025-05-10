@@ -2,6 +2,7 @@ package com.example.campus_connect.Entity;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.*;
 
@@ -25,6 +26,7 @@ public class EventAttendanceEntity {
     private Boolean attended = false;
 
     @Column(name = "check_in_time")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime checkInTime;
 
     // Getters and setters...

@@ -1,15 +1,14 @@
 package com.example.campus_connect.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.example.campus_connect.DTOs.MembershipRequests.MembershipRequestDTO;
 import com.example.campus_connect.Entity.MembershipRequestsEntity;
-import com.example.campus_connect.DTOs.MembershipRequests.MembershipResponseDTO;
-import com.example.campus_connect.Mapper.MembershipRequestsMapper;
 import com.example.campus_connect.Repository.MembershipRequestsRepository;
 
 @Service
@@ -17,32 +16,27 @@ public class MembershipRequestsService {
     @Autowired
     private MembershipRequestsRepository membershipRequestsRepository;
 
-    @Autowired
-    private MembershipRequestsMapper membershipRequestsMapper;
 
-    public List<MembershipResponseDTO> getAllMembershipRequests() {
+    public List<MembershipRequestsEntity> getAllMembershipRequests() {
 
         return membershipRequestsRepository.findAll().stream()
-                .map(membershipRequestsMapper::toResponseDTO)
-                .toList();
+                .collect(Collectors.toList());
     }
 
-    public ResponseEntity<MembershipResponseDTO> getMembershipRequestById(Integer id) {
+    public ResponseEntity<MembershipRequestsEntity> getMembershipRequestById(Integer id) {
         MembershipRequestsEntity membershipRequest = membershipRequestsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Membership request not found with id: " + id));
-        return ResponseEntity.ok().body(membershipRequestsMapper.toResponseDTO(membershipRequest));
+        return ResponseEntity.ok().body(membershipRequest);
 
     }
 
-    public ResponseEntity<MembershipResponseDTO> createMembershipRequest(
-            MembershipRequestDTO membershipRequestDTO) {
+    public ResponseEntity<MembershipRequestsEntity> createMembershipRequest(
+            MembershipRequestsEntity membershipRequestsEntity) {
 
-        MembershipRequestsEntity membershipRequest = membershipRequestsMapper.toEntity(membershipRequestDTO);
+        MembershipRequestsEntity membershipRequest = membershipRequestsEntity;
         membershipRequest.setStatus("PENDING");
-        
         MembershipRequestsEntity createdMembershipRequest = membershipRequestsRepository.save(membershipRequest);
-        MembershipResponseDTO responseDto = membershipRequestsMapper.toResponseDTO(createdMembershipRequest);
-        return ResponseEntity.status(201).body(responseDto);
+        return ResponseEntity.status(201).body(createdMembershipRequest);
         
     }
 

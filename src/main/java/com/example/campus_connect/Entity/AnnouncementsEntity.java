@@ -2,6 +2,7 @@ package com.example.campus_connect.Entity;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.*;
 
@@ -30,7 +31,8 @@ public class AnnouncementsEntity {
     // ]::text[])
 
     @Column(name = "expiration_date")
-    private LocalDate expirationDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate expirationDate = LocalDate.now().plusDays(7);
 
     // Getters and setters...
     public Integer getId() {

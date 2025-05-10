@@ -2,6 +2,7 @@ package com.example.campus_connect.Entity;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.*;
 
@@ -21,6 +22,7 @@ public class EventsEntity {
     private String eventName;
 
     @Column(name = "event_date", nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate eventDate;
 
     @Column(name = "description", columnDefinition = "TEXT")

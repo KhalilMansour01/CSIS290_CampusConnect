@@ -9,9 +9,7 @@ import org.springframework.http.HttpStatus;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.example.campus_connect.DTOs.Users.UserResponseDTO;
 import com.example.campus_connect.Entity.UsersEntity;
-import com.example.campus_connect.Mapper.UserMapper;
 
 import com.example.campus_connect.Repository.UsersRepository;
 
@@ -24,16 +22,13 @@ public class UsersService {
     private UserIdGeneratorService userIdGenerator;
 
     @Autowired
-    private UserMapper usersMapper;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public List<UserResponseDTO> getAllUsers() {
-        return usersRepository.findAll().stream()
-                .map(usersMapper::toDto)
-                .collect(Collectors.toList());
-    }
+    // public List<UserResponseDTO> getAllUsers() {
+    //     return usersRepository.findAll().stream()
+    //             .map(usersMapper::toDto)
+    //             .collect(Collectors.toList());
+    // }
 
     public List<UsersEntity> getAllUsers1() {
         return usersRepository.findAll().stream()
@@ -41,10 +36,10 @@ public class UsersService {
     }
 
 
-    public ResponseEntity<UserResponseDTO> getUserById(String id) {
+    public ResponseEntity<UsersEntity> getUserById(String id) {
         UsersEntity user = usersRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-        return ResponseEntity.ok(usersMapper.toDto(user));
+        return ResponseEntity.ok(user);
     }
 
     // public ResponseEntity<UserResponseDTO> createUser(UserRequestDTO userDTO) {
@@ -93,5 +88,9 @@ public class UsersService {
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
         usersRepository.delete(user);
         return ResponseEntity.ok().build();
+    }
+
+    public Boolean isUserExists(String email) {
+        return usersRepository.findByEmail(email).isPresent();
     }
 }

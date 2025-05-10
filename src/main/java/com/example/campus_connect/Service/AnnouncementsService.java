@@ -14,7 +14,7 @@ import com.example.campus_connect.Repository.AnnouncementsRepository;
 
 @Service
 public class AnnouncementsService {
-    
+
     @Autowired
     private AnnouncementsRepository announcementsRepository;
 
@@ -30,13 +30,8 @@ public class AnnouncementsService {
     }
 
     public ResponseEntity<AnnouncementsEntity> createAnnouncement(AnnouncementsEntity announcement) {
-        boolean isExist = announcementsRepository.existsById(announcement.getId());
-        if (isExist) {
-            throw new RuntimeException("Announcement already exists with id: " + announcement.getId());
-        } else {
-            AnnouncementsEntity createdAnnouncement = announcementsRepository.save(announcement);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdAnnouncement);
-        }
+        AnnouncementsEntity createdAnnouncement = announcementsRepository.save(announcement);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdAnnouncement);
     }
 
     public ResponseEntity<AnnouncementsEntity> updateAnnouncement(Integer id, AnnouncementsEntity announcement) {
@@ -52,7 +47,7 @@ public class AnnouncementsService {
         if (announcement.getPriority() != null) {
             existingAnnouncement.setPriority(announcement.getPriority());
         }
-        if(announcement.getExpirationDate() != null) {
+        if (announcement.getExpirationDate() != null) {
             existingAnnouncement.setExpirationDate(announcement.getExpirationDate());
         }
 
@@ -67,8 +62,9 @@ public class AnnouncementsService {
         return ResponseEntity.ok().build();
     }
     // public List<AnnouncementsEntity> getAnnouncementsByClubId(Integer clubId) {
-    //     List<AnnouncementsEntity> announcementsList = announcementsRepository.findByClubId(clubId);
-    //     return announcementsList;
+    // List<AnnouncementsEntity> announcementsList =
+    // announcementsRepository.findByClubId(clubId);
+    // return announcementsList;
     // }
 
 }
