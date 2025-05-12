@@ -44,29 +44,13 @@ public class UsersEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
 
-    @Column(name = "is_enabled", nullable = false)
-    private boolean isEnabled = false;
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled = false;
 
     @Column(name = "verification_token", length = 64)
     private String verificationToken;
 
     // --- Getters and Setters ---
-
-    public boolean isEnabled() {
-        return isEnabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
-    }
-
-    public String getVerificationToken() {
-        return verificationToken;
-    }
-
-    public void setVerificationToken(String verificationToken) {
-        this.verificationToken = verificationToken;
-    }
 
     public String getId() {
         return id;
@@ -132,6 +116,24 @@ public class UsersEntity {
         this.dateOfBirth = dateOfBirth;
     }
 
+    
+    public boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public String getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
+    }
+
+  
     public String toString() {
         return "UsersEntity{" +
                 "id='" + id + '\'' +
@@ -145,11 +147,4 @@ public class UsersEntity {
                 '}';
     }
 
-    @PrePersist
-
-    public void generateCustomUserId() {
-        if (this.id == null) {
-            // You can leave this empty, as the trigger will handle ID generation
-        }
-    }
 }

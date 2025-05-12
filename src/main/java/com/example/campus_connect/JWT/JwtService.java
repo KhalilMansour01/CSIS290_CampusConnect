@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -18,12 +19,16 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
 
+import com.example.campus_connect.Entity.UsersEntity;
+import com.example.campus_connect.Repository.UsersRepository;
+
 @Service
 public class JwtService {
-    // Add your secret key here
-    // private static final String SECRET_KEY = "9C8380FBD615FC93C9A2FF197191ED35C0EB93B64B41A6A89E4D906D848BDAA4";
-    private static final String SECRET_KEY = Base64.getEncoder().encodeToString("9C8380FBD615FC93C9A2FF197191ED35C0EB93B64B41A6A89E4D906D848BDAA4".getBytes());
-
+    @Autowired
+    private UsersRepository usersRepository;
+    
+    private static final String SECRET_KEY = Base64.getEncoder()
+            .encodeToString("9C8380FBD615FC93C9A2FF197191ED35C0EB93B64B41A6A89E4D906D848BDAA4".getBytes());
 
     private static final long EXPIRATION_TIME = TimeUnit.MINUTES.toMillis(30);
 
@@ -34,9 +39,15 @@ public class JwtService {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList()));
 
+        UsersEntity user = usersRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Add the user ID to the token
+        claims.put("userId", user.getId());
+
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(userDetails.getUsername()) 
+                .setSubject(userDetails.getUsername())
                 .setIssuedAt(Date.from(Instant.now()))
                 .setExpiration(Date.from(Instant.now().plusMillis(EXPIRATION_TIME)))
                 .signWith(generateKey())
@@ -63,14 +74,18 @@ public class JwtService {
                 .parseClaimsJws(token)
                 .getBody();
         // return Jwts.parserBuilder()
-        //         .verifyWith(generateKey())
-        //         .build()
-        //         .parseSignedClaims(token)
-        //         .getPayload();
+        // .verifyWith(generateKey())
+        // .build()
+        // .parseSignedClaims(token)
+        // .getPayload();
     }
 
     public boolean validateToken(String token) {
         Claims claims = getClaims(token);
         return claims.getExpiration().after(Date.from(Instant.now()));
+    }
+
+    public String extractUserId(String token) {
+        return getClaims(token).get("userId", String.class);
     }
 }

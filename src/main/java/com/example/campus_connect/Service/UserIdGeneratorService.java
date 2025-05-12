@@ -33,4 +33,22 @@ public class UserIdGeneratorService {
         String paddedNumber = String.format("%04d", nextNumber); // 0001, 0002, etc.
         return "USR" + year + paddedNumber;
     }
+
+    @Transactional
+    public void decrementLastNumber(String userId) {
+        if (userId == null || userId.length() < 7 || !userId.startsWith("USR")) {
+            throw new IllegalArgumentException("Invalid user ID format: " + userId);
+        }
+
+        String yearSuffix = userId.substring(3, 5); // Extract 'YY' from 'USRYYXXXX'
+
+        UserIdCounter counter = counterRepository.findById(yearSuffix)
+                .orElseThrow(() -> new IllegalStateException("Counter for year " + yearSuffix + " not found"));
+
+        int currentNumber = counter.getLastNumber();
+        if (currentNumber > 0) {
+            counter.setLastNumber(currentNumber - 1);
+            counterRepository.save(counter);
+        }
+    }
 }

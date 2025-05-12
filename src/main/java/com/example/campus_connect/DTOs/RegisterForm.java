@@ -2,12 +2,31 @@ package com.example.campus_connect.DTOs;
 
 import java.time.LocalDate;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class RegisterForm {
+
+    @NotBlank
     private String firstName;
+
+    @NotBlank
     private String lastName;
+
+    @Email(message = "Invalid email format")
+    @ValidEmailDomain(allowedDomains = { "balamand.edu.lb",
+            "std.balamand.edu.lb" }, message = "Email must be a university email")
+    @NotBlank
     private String email;
+
+    @NotBlank
     private String password;
-    private String userType;
+
+    @NotBlank
+    private String userType = "Student"; // Default to Student
+
+    @NotNull
     private LocalDate dateOfBirth;
 
     // Getters and Setters

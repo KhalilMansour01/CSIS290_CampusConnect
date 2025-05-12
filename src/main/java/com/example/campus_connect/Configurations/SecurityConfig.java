@@ -9,8 +9,9 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
+// import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,32 +35,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-        .csrf(AbstractHttpConfigurer::disable)  //by default csrf is enabled, it blocks post requests
-        .authorizeHttpRequests(registry ->{
-            registry.requestMatchers("/api/auth/login/**").permitAll();
-            registry.requestMatchers("/**").hasAnyRole("Student", "Officer", "OSA_Admin");
-            // registry.requestMatchers(
-            //     "/api/announcements/**",
-            //                 "/api/club-membership/**",
-            //                 "/api/club-roles/**",
-            //                 "/api/clubs/**",
-            //                 "/api/event-attendance/**",
-            //                 "/api/events/**",
-            //                 "/api/users/**",
-            //                 "/api/membership-requests/**"
-            //                 )
-            //                 .hasAnyRole("Student", "Officer");
-
-            // registry.requestMatchers("/**").hasRole("OSA_Admin");
-            // registry.requestMatchers("/**").permitAll();
-            // registry.requestMatchers("/**").hasAnyRole("OSA_Admin");
-            // registry.requestMatchers("/**").permitAll();
-
-            registry.anyRequest().authenticated();
-        })
-        .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
-        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-        .build();
+                .csrf(AbstractHttpConfigurer::disable) // by default csrf is enabled, it blocks post requests
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // <-- IMPORTANT for REST
+                .authorizeHttpRequests(registry -> {
+                    registry.requestMatchers(
+                            // "/api/auth/login/**",
+                            // "/api/auth/register/**",
+                            // "/api/auth/verify-email/**",
+                            "/api/users/login/**",
+                            "/api/users/register/**",
+                            "/api/users/verify-email/**")
+                            .permitAll();
+                    registry.requestMatchers("/**").hasAnyRole("Student", "Officer", "OSA_Admin");
+                    registry.anyRequest().authenticated();
+                })
+                // .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 
     @Bean

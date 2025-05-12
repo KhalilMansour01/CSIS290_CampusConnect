@@ -27,8 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (user.isPresent()) {
             var tempUser = user.get();
             String[] roles = getRoles(tempUser);
-            // Debug log to check roles
-            // System.out.println("Roles assigned: " + Arrays.toString(roles));
+            
             return User.builder()
                     .username(tempUser.getEmail())
                     .password(tempUser.getPassword())

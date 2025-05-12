@@ -3,7 +3,6 @@ package com.example.campus_connect.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,6 @@ import com.example.campus_connect.Repository.MembershipRequestsRepository;
 public class MembershipRequestsService {
     @Autowired
     private MembershipRequestsRepository membershipRequestsRepository;
-
 
     public List<MembershipRequestsEntity> getAllMembershipRequests() {
 
@@ -34,10 +32,22 @@ public class MembershipRequestsService {
             MembershipRequestsEntity membershipRequestsEntity) {
 
         MembershipRequestsEntity membershipRequest = membershipRequestsEntity;
-        membershipRequest.setStatus("PENDING");
+        membershipRequest.setStatus("Pending");
         MembershipRequestsEntity createdMembershipRequest = membershipRequestsRepository.save(membershipRequest);
         return ResponseEntity.status(201).body(createdMembershipRequest);
+
+    }
+
+    public ResponseEntity<MembershipRequestsEntity> approveMembershipRequest(Integer id) {
+
+        MembershipRequestsEntity existingMembershipRequest = membershipRequestsRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Membership request not found with id: " + id));
+
+        existingMembershipRequest.setStatus("Approved");
         
+        final MembershipRequestsEntity updatedMembershipRequest = membershipRequestsRepository
+                .save(existingMembershipRequest);
+        return ResponseEntity.ok(updatedMembershipRequest);
     }
 
     public ResponseEntity<MembershipRequestsEntity> updateMembershipRequest(Integer id,
