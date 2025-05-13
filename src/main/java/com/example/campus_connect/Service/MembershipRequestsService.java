@@ -41,9 +41,9 @@ public class MembershipRequestsService {
     public ResponseEntity<MembershipRequestsEntity> createMembershipRequest(
             MembershipRequestsEntity membershipRequestsEntity) {
 
-        MembershipRequestsEntity membershipRequest = membershipRequestsEntity;
-        membershipRequest.setStatus("Pending");
-        MembershipRequestsEntity createdMembershipRequest = membershipRequestsRepository.save(membershipRequest);
+        membershipRequestsEntity.setStatus("Pending");
+        System.out.println("AAAAAAAAAAAAAAAAA " + membershipRequestsEntity.getClub() + " " + membershipRequestsEntity.getUser());
+        MembershipRequestsEntity createdMembershipRequest = membershipRequestsRepository.save(membershipRequestsEntity);
         return ResponseEntity.status(201).body(createdMembershipRequest);
 
     }
