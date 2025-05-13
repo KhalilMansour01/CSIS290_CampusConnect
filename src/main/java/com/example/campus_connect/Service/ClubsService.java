@@ -51,21 +51,17 @@ public class ClubsService {
 
     public ResponseEntity<ClubsEntity> createClub(ClubsEntity clubsEntity) {
 
-        // ClubsEntity createdClub = clubsEntity;
+        // Save the club entity
         ClubsEntity newClub = clubsRepository.save(clubsEntity);
 
         // Create a new ClubMembershipEntity for the president
         ClubMembershipEntity clubMembership = new ClubMembershipEntity();
-
         // Set the president as the user in the club membership
         UsersEntity president = usersRepository.findById(clubsEntity.getPresident().getId())
                 .orElseThrow(
                         () -> new RuntimeException("User not found with id: " + clubsEntity.getPresident().getId()));
         ClubRolesEntity presidentRole = clubRolesRepository.findById(1)
                 .orElseThrow(() -> new RuntimeException("President club role not found"));
-
-        
-
         // Set the club membership details
         clubMembership.setUser(president);
         clubMembership.setClub(newClub);
@@ -73,10 +69,6 @@ public class ClubsService {
         // Save the club membership
         clubMembershipRepository.save(clubMembership);
 
-        // Set the president in the club entity
-        // clubsEntity.setPresident(president);
-        // Save the club entity
-        // clubsRepository.save(clubsEntity);
         return ResponseEntity.status(HttpStatus.CREATED).body(clubsEntity);
     }
 

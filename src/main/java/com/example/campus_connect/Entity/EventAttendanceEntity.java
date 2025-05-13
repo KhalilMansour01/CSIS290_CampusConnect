@@ -27,7 +27,7 @@ public class EventAttendanceEntity {
 
     @Column(name = "check_in_time")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    private LocalDateTime checkInTime;
+    private LocalDateTime checkInTime = LocalDateTime.now();
 
     // Getters and setters...
     public Integer getId() {
