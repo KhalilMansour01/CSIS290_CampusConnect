@@ -29,6 +29,12 @@ public class ClubsService {
         return ResponseEntity.ok(club);
     }
 
+    public ResponseEntity<ClubsEntity> getByPresidentId(String presidentId) {
+        ClubsEntity club = clubsRepository.findByPresidentId(presidentId)
+                .orElseThrow(() -> new RuntimeException("Club not found with president id: " + presidentId));
+        return ResponseEntity.ok(club);
+    }
+    
     public ResponseEntity<ClubsEntity> createClub(ClubsEntity clubsEntity) {
         ClubsEntity createdClub = clubsRepository.save(clubsEntity);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdClub);

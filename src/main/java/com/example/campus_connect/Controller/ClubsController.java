@@ -37,6 +37,12 @@ public class ClubsController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/by-president/{presidentId}")
+    public ResponseEntity<ClubsEntity> getByPresidentId(@PathVariable String presidentId){
+        ClubsEntity response = clubsService.getByPresidentId(presidentId).getBody();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @PostMapping("/create")
     public ResponseEntity<ClubsEntity> createClub(@RequestBody ClubsEntity club) {
         return clubsService.createClub(club);
