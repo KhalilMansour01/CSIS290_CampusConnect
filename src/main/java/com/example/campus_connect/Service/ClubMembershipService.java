@@ -63,4 +63,7 @@ public class ClubMembershipService {
         clubMembershipRepository.delete(clubMembership);
         return ResponseEntity.ok().build();
     }
+
+    
+
 }

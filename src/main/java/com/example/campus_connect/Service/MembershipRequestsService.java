@@ -7,13 +7,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.campus_connect.Entity.ClubMembershipEntity;
+import com.example.campus_connect.Entity.ClubRolesEntity;
 import com.example.campus_connect.Entity.MembershipRequestsEntity;
+import com.example.campus_connect.Repository.ClubMembershipRepository;
 import com.example.campus_connect.Repository.MembershipRequestsRepository;
+import com.example.campus_connect.Repository.ClubRolesRepository;
 
 @Service
 public class MembershipRequestsService {
     @Autowired
     private MembershipRequestsRepository membershipRequestsRepository;
+
+    @Autowired
+    private ClubMembershipRepository clubMembershipRepository;
+
+    @Autowired
+    private ClubRolesRepository clubRolesRepository;
 
     public List<MembershipRequestsEntity> getAllMembershipRequests() {
 
@@ -44,7 +54,11 @@ public class MembershipRequestsService {
                 .orElseThrow(() -> new RuntimeException("Membership request not found with id: " + id));
 
         existingMembershipRequest.setStatus("Approved");
-        
+        ClubMembershipEntity newClubMembership = new ClubMembershipEntity();
+        newClubMembership.setClub(existingMembershipRequest.getClub());
+        newClubMembership.setUser(existingMembershipRequest.getUser());
+        clubMembershipRepository.save(newClubMembership);
+
         final MembershipRequestsEntity updatedMembershipRequest = membershipRequestsRepository
                 .save(existingMembershipRequest);
         return ResponseEntity.ok(updatedMembershipRequest);
@@ -58,6 +72,26 @@ public class MembershipRequestsService {
 
         if (membershipRequest.getStatus() != null) {
             existingMembershipRequest.setStatus(membershipRequest.getStatus());
+        }
+
+        if ("Approved".equals(membershipRequest.getStatus())) {
+
+            ClubMembershipEntity newClubMembership = new ClubMembershipEntity();
+            newClubMembership.setClub(existingMembershipRequest.getClub());
+            newClubMembership.setUser(existingMembershipRequest.getUser());
+
+            ClubRolesEntity defaultRole = clubRolesRepository.findById(2)
+                    .orElseThrow(() -> new RuntimeException("Default club role not found"));
+
+            newClubMembership.setRole(defaultRole);
+
+            clubMembershipRepository.save(newClubMembership);
+
+        } else if ("Rejected".equals(membershipRequest.getStatus())) {
+            return deleteMembershipRequest(existingMembershipRequest.getId());
+        } else {
+            throw new RuntimeException("Invalid status: " + membershipRequest.getStatus()
+                    + ". Only 'Approved' or 'Rejected' are allowed.");
         }
 
         final MembershipRequestsEntity updatedMembershipRequest = membershipRequestsRepository
