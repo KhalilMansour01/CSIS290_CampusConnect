@@ -44,7 +44,8 @@ public class SecurityConfig {
                             // "/api/auth/verify-email/**",
                             "/api/users/login/**",
                             "/api/users/register/**",
-                            "/api/users/verify-email/**")
+                            "/api/users/verify-email/**",
+                            "/api/documents/upload/**")
                             .permitAll();
                     registry.requestMatchers("/**").hasAnyRole("Student", "Officer", "OSA_Admin");
                     registry.anyRequest().authenticated();

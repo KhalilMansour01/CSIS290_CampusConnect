@@ -30,13 +30,8 @@ public class ClubRolesService {
     }
 
     public ResponseEntity<ClubRolesEntity> createClubRole(ClubRolesEntity clubRole) {
-        // boolean isExist = clubRolesRepository.existsById(clubRole.getId());
-        // if (isExist) {
-        //     throw new RuntimeException("Club role already exists with id: " + clubRole.getId());
-        // } else {
             ClubRolesEntity createdClubRole = clubRolesRepository.save(clubRole);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdClubRole);
-        // }
     }
 
     public ResponseEntity<ClubRolesEntity> updateClubRole(Integer id, ClubRolesEntity clubRole) {

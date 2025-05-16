@@ -31,9 +31,12 @@ public class EventAttendanceService {
     }
 
     public ResponseEntity<EventAttendanceEntity> createEventAttendance(EventAttendanceEntity eventAttendance) {
-        boolean isExist = eventAttendanceRepository.existsById(eventAttendance.getId());
-        if (isExist) {
-            throw new RuntimeException("Event attendance already exists with id: " + eventAttendance.getId());
+        // Check if the event attendance already exists for the given event and user
+        Integer eventId = eventAttendance.getEvent().getId();
+        String userId = eventAttendance.getUser().getId();
+        boolean exists = eventAttendanceRepository.existsByEventIdAndUserId(eventId, userId);
+        if (exists) {
+            throw new RuntimeException("User has already attended this event.");
         } else {
             EventAttendanceEntity createdEventAttendance = eventAttendanceRepository.save(eventAttendance);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdEventAttendance);

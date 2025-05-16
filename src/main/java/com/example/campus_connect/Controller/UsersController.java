@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.campus_connect.DTOs.LoginForm;
 import com.example.campus_connect.DTOs.RegisterForm;
 import com.example.campus_connect.Entity.UsersEntity;
+import com.example.campus_connect.Service.ClubMembershipService;
 import com.example.campus_connect.Service.EmailService;
 import com.example.campus_connect.Service.UsersService;
 
@@ -35,6 +36,9 @@ public class UsersController {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private ClubMembershipService clubMembershipService;
 
     @GetMapping("/all")
     public ResponseEntity<List<UsersEntity>> getAllUsers1() {
@@ -58,8 +62,9 @@ public class UsersController {
      * }
      */
     // @PostMapping("/create")
-    // public ResponseEntity<UsersEntity> createUser(@RequestBody UsersEntity user) {
-    //     return usersService.createUser(user);
+    // public ResponseEntity<UsersEntity> createUser(@RequestBody UsersEntity user)
+    // {
+    // return usersService.createUser(user);
     // }
 
     @PutMapping("/update/{id}")
@@ -81,7 +86,6 @@ public class UsersController {
     public ResponseEntity<UsersEntity> registerUser(@Valid @RequestBody RegisterForm registerForm) {
         return usersService.registerUser(registerForm);
     }
-    
 
     @GetMapping("/verify-email")
     public ResponseEntity<String> verifyEmail(@RequestParam String token) {
@@ -94,6 +98,10 @@ public class UsersController {
         emailService.sendEmail(to, subject, body);
         return "Email sent successfully!";
     }
-    
 
+    @GetMapping("/club-members/{clubId}")
+    public ResponseEntity<List<UsersEntity>> getClubMembers(@PathVariable Integer clubId) {
+        List<UsersEntity> members = clubMembershipService.getMembersByClubId(clubId);
+        return ResponseEntity.ok(members);
+    }
 }

@@ -127,32 +127,32 @@ public class UsersService {
 
         if (authentication.isAuthenticated()) {
 
-            if (!user.getEnabled()) {
+            // if (!user.getEnabled()) {
 
-                // Check if the user has a verification token
-                boolean isTokenPresent = tokenRepository.findByUserId(user.getId()).isPresent();
-                // Check if the token is expired
-                boolean isTokenExpired = tokenRepository.findByToken(user.getVerificationToken()).get().getExpiryDate()
-                        .isBefore(LocalDateTime.now());
+            //     // Check if the user has a verification token
+            //     boolean isTokenPresent = tokenRepository.findByUserId(user.getId()).isPresent();
+            //     // Check if the token is expired
+            //     boolean isTokenExpired = tokenRepository.findByToken(user.getVerificationToken()).get().getExpiryDate()
+            //             .isBefore(LocalDateTime.now());
 
-                if (isTokenPresent && isTokenExpired) {
+            //     if (isTokenPresent && isTokenExpired) {
 
-                    // delete old token
-                    tokenRepository.delete(tokenRepository.findByUserId(user.getId()).get());
+            //         // delete old token
+            //         tokenRepository.delete(tokenRepository.findByUserId(user.getId()).get());
 
-                    // generate new token and save it to the user
-                    String token = UUID.randomUUID().toString();
-                    VerificationToken verificationToken = generateVerificationToken(user, token);
-                    user.setVerificationToken(verificationToken.getToken());
-                    usersRepository.save(user);
+            //         // generate new token and save it to the user
+            //         String token = UUID.randomUUID().toString();
+            //         VerificationToken verificationToken = generateVerificationToken(user, token);
+            //         user.setVerificationToken(verificationToken.getToken());
+            //         usersRepository.save(user);
 
-                    // Send the verification email
-                    sendEmailVerification(loginForm.email(), token);
+            //         // Send the verification email
+            //         sendEmailVerification(loginForm.email(), token);
 
-                    throw new RuntimeException("User is not enabled or token has expired");
-                }
+            //         throw new RuntimeException("User is not enabled or token has expired");
+            //     }
 
-            }
+            // }
             String jwtTokeString = jwtService.generateToken(userDetailsService.loadUserByUsername(loginForm.email()));
             return ResponseEntity.ok(jwtTokeString);
         } else {
@@ -195,7 +195,7 @@ public class UsersService {
             newUser.setVerificationToken(verificationToken.getToken());
             usersRepository.save(newUser);
 
-            // Send the verification email
+            // TODO Send the verification email
             // sendEmailVerification(registerForm.getEmail(), token);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(newUser);

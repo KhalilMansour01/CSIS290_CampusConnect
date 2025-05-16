@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.example.campus_connect.Entity.ClubMembershipEntity;
 import com.example.campus_connect.Entity.ClubRolesEntity;
 import com.example.campus_connect.Entity.MembershipRequestsEntity;
+import com.example.campus_connect.Entity.NotificationEntity;
+import com.example.campus_connect.Entity.UsersEntity;
 import com.example.campus_connect.Repository.ClubMembershipRepository;
 import com.example.campus_connect.Repository.MembershipRequestsRepository;
 import com.example.campus_connect.Repository.ClubRolesRepository;
@@ -24,6 +26,9 @@ public class MembershipRequestsService {
 
     @Autowired
     private ClubRolesRepository clubRolesRepository;
+
+    @Autowired
+    private NotificationService notificationService;
 
     public List<MembershipRequestsEntity> getAllMembershipRequests() {
 
@@ -42,8 +47,20 @@ public class MembershipRequestsService {
             MembershipRequestsEntity membershipRequestsEntity) {
 
         membershipRequestsEntity.setStatus("Pending");
-        System.out.println("AAAAAAAAAAAAAAAAA " + membershipRequestsEntity.getClub() + " " + membershipRequestsEntity.getUser());
         MembershipRequestsEntity createdMembershipRequest = membershipRequestsRepository.save(membershipRequestsEntity);
+
+        // Notify the club officer (president)
+        UsersEntity officer = createdMembershipRequest.getClub().getPresident();
+
+        NotificationEntity notification = new NotificationEntity();
+        notification.setRecipient(officer); // club president
+        notification.setReferenceId(createdMembershipRequest.getId());
+        notification.setReferenceType("MEMBERSHIP_REQUEST");
+        notification.setNotificationType("PENDING");
+        notification.setMessage("A new membership request is pending your approval.");
+
+        notificationService.sendNotification(notification);
+
         return ResponseEntity.status(201).body(createdMembershipRequest);
 
     }
@@ -74,7 +91,10 @@ public class MembershipRequestsService {
             existingMembershipRequest.setStatus(membershipRequest.getStatus());
         }
 
-        if ("Approved".equals(membershipRequest.getStatus())) {
+        UsersEntity student = existingMembershipRequest.getUser();
+        String status = membershipRequest.getStatus();
+
+        if ("Approved".equals(status)) {
 
             ClubMembershipEntity newClubMembership = new ClubMembershipEntity();
             newClubMembership.setClub(existingMembershipRequest.getClub());
@@ -87,7 +107,26 @@ public class MembershipRequestsService {
 
             clubMembershipRepository.save(newClubMembership);
 
-        } else if ("Rejected".equals(membershipRequest.getStatus())) {
+            // Notify the student of approval
+            NotificationEntity notification = new NotificationEntity();
+            notification.setRecipient(student);
+            notification.setReferenceId(existingMembershipRequest.getId());
+            notification.setReferenceType("MEMBERSHIP_REQUEST");
+            notification.setNotificationType("STATUS_UPDATE");
+            notification.setMessage("Your membership request has been approved.");
+            notificationService.sendNotification(notification);
+
+        } else if ("Rejected".equals(status)) {
+
+            // Notify the student of rejection
+            NotificationEntity notification = new NotificationEntity();
+            notification.setRecipient(student);
+            notification.setReferenceId(existingMembershipRequest.getId());
+            notification.setReferenceType("MEMBERSHIP_REQUEST");
+            notification.setNotificationType("STATUS_UPDATE");
+            notification.setMessage("Your membership request has been rejected.");
+            notificationService.sendNotification(notification);
+
             return deleteMembershipRequest(existingMembershipRequest.getId());
         } else {
             throw new RuntimeException("Invalid status: " + membershipRequest.getStatus()

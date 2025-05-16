@@ -8,16 +8,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.example.campus_connect.Entity.ClubMembershipEntity;
+import com.example.campus_connect.Entity.UsersEntity;
 import com.example.campus_connect.Repository.ClubMembershipRepository;
 
 @Service
 public class ClubMembershipService {
-    
+
     @Autowired
     private ClubMembershipRepository clubMembershipRepository;
-    
+
     public List<ClubMembershipEntity> getAllClubMemberships() {
         List<ClubMembershipEntity> clubMembershipList = clubMembershipRepository.findAll();
         return clubMembershipList;
@@ -30,13 +32,8 @@ public class ClubMembershipService {
     }
 
     public ResponseEntity<ClubMembershipEntity> createClubMembership(ClubMembershipEntity clubMembership) {
-        boolean isExist = clubMembershipRepository.existsById(clubMembership.getId());
-        if (isExist) {
-            throw new RuntimeException("Club membership already exists with id: " + clubMembership.getId());
-        } else {
-            ClubMembershipEntity createdClubMembership = clubMembershipRepository.save(clubMembership);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdClubMembership);
-        }
+        ClubMembershipEntity createdClubMembership = clubMembershipRepository.save(clubMembership);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdClubMembership);
     }
 
     public ResponseEntity<ClubMembershipEntity> updateClubMembership(Integer id, ClubMembershipEntity clubMembership) {
@@ -64,6 +61,11 @@ public class ClubMembershipService {
         return ResponseEntity.ok().build();
     }
 
-    
+    public List<UsersEntity> getMembersByClubId(Integer clubId) {
+        List<ClubMembershipEntity> memberships = clubMembershipRepository.findByClubId(clubId);
+        return memberships.stream()
+                .map(ClubMembershipEntity::getUser)
+                .collect(Collectors.toList());
+    }
 
 }

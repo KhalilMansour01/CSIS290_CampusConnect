@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.campus_connect.Entity.UsersEntity;
+import java.util.List;
 
 public interface UsersRepository extends JpaRepository<UsersEntity, String> {
     // Find user by email
@@ -15,4 +16,6 @@ public interface UsersRepository extends JpaRepository<UsersEntity, String> {
 
     // Find user by verification token
     Optional<UsersEntity> findByVerificationToken(String verificationToken);
+
+    List<UsersEntity> findByUserType(String userType);
 }

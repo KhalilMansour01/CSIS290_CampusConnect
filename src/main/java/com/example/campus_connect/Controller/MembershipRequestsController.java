@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 // import org.springframework.data.domain.Pageable;
 // import org.springframework.data.domain.Sort;
 
-import java.time.LocalDate;
 import java.util.*;
 
 import com.example.campus_connect.Entity.MembershipRequestsEntity;
@@ -55,6 +54,11 @@ public class MembershipRequestsController {
         return membershipRequestsService.getMembershipRequestById(id);
     }
 
+    @PostMapping("/create1")
+    public ResponseEntity<MembershipRequestsEntity> createMembershipRequest(
+            @RequestBody MembershipRequestsEntity membershipRequest) {
+        return membershipRequestsService.createMembershipRequest(membershipRequest);
+    }
     @PostMapping("/create")
     public ResponseEntity<MembershipRequestsEntity> createMembershipRequest(
             @RequestBody Map<String, Object> request) {
@@ -92,21 +96,21 @@ public class MembershipRequestsController {
         }
 
         // Fetch user and club by IDs
-        String userId = (String) request.get("userId");
-        Integer clubId = (Integer) request.get("clubId");
+        // String userId = (String) request.get("userId");
+        // Integer clubId = (Integer) request.get("clubId");
 
-        UsersEntity user = usersService.getUserById(userId).getBody();  // Assuming usersService has this method
-        ClubsEntity club = clubsService.getClubById(clubId).getBody();  // Assuming clubsService has this method
+        // UsersEntity user = usersService.getUserById(userId).getBody();  // Assuming usersService has this method
+        // ClubsEntity club = clubsService.getClubById(clubId).getBody();  // Assuming clubsService has this method
 
-        if (user == null || club == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);  // Bad request if user or club is invalid
-        }
+        // if (user == null || club == null) {
+        //     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);  // Bad request if user or club is invalid
+        // }
 
         // Update the membership request
-        existingRequest.setUser(user);
-        existingRequest.setClub(club);
+        // existingRequest.setUser(user);
+        // existingRequest.setClub(club);
         existingRequest.setStatus((String) request.get("status"));  // Assume status is passed in the request body
-        existingRequest.setRequestDate(LocalDate.now());  // Optionally, update the date to current time
+        // existingRequest.setRequestDate(LocalDate.now());  // Optionally, update the date to current time
 
         // Call the service to save the updated entity
         MembershipRequestsEntity updatedRequest = membershipRequestsService.updateMembershipRequest(id, existingRequest).getBody();

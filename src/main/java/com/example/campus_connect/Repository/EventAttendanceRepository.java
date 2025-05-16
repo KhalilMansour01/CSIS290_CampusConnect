@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.campus_connect.Entity.EventAttendanceEntity;
 
 public interface EventAttendanceRepository extends JpaRepository<EventAttendanceEntity, Integer> {
-    // EventAttendanceEntity findByEventIdAndUserId(String eventId, String userId);
+    boolean existsByEventIdAndUserId(Integer eventId, String userId);
     
     
 }

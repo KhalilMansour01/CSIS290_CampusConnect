@@ -69,6 +69,10 @@ public class ClubsService {
         // Save the club membership
         clubMembershipRepository.save(clubMembership);
 
+        // TODO Change the user type to officer
+        // president.setUserType("Officer");
+        // usersRepository.save(president);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(clubsEntity);
     }
 
